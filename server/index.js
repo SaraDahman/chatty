@@ -4,9 +4,9 @@ const port = app.get('port');
 
 const uri = process.env.ATLAS_URI;
 
-app.listen((port, (req, res) => {
-    console.log(`app is running on port ${port}`);
-}))
+app.listen(port, () => {
+    console.log(`App is running on http://localhost:${port}`);
+});
 
 
 mongoose.connect(uri).then(() => {
