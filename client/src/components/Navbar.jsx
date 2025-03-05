@@ -1,7 +1,10 @@
 import { Container, Navbar, Stack, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from '../context/AuthContext';
 
 const NavBar = () => {
+  const { user } = useContext(AuthContext);
   return (
     <Navbar className='bg-body-tertiary px-5 mb-4' data-bs-theme='dark'>
       <Navbar.Brand style={{ fontSize: '2.3rem', fontWeight: '700' }}>
@@ -16,7 +19,7 @@ const NavBar = () => {
       <Navbar.Collapse className='justify-content-end'>
         {/* <Stack direction='horizontal' gap={4}>
           <Navbar.Text className='text-white'>
-            Signed in as <b className='text-warning'>Sara Dahman</b>
+            Signed in as <b className='text-warning'>{user.name}</b>
           </Navbar.Text>
           <Button variant='outline-light' size='sm'>
             Log Out
