@@ -19,12 +19,9 @@ const Login = () => {
       noValidate
       validated={validated}
       onSubmit={handleSubmit}
-      style={{ width: '50%', margin: '0 auto', paddingTop: '4%' }}
+      style={{ width: '50%', margin: '0 auto', paddingTop: '5%' }}
     >
-      <h2
-        className='mb-5 text-warning'
-        style={{ fontWeight: '700', fontSize: '2.5rem' }}
-      >
+      <h2 className='mb-4 text-warning' style={{ fontWeight: '700' }}>
         Log in to Your Account
       </h2>
 
