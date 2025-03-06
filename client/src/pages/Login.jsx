@@ -1,16 +1,21 @@
-import { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { useState, useContext } from 'react';
+import { Form, Button, Alert } from 'react-bootstrap';
+import AuthContext from '../context/AuthContext';
 
 const Login = () => {
   const [validated, setValidated] = useState(false);
 
+  const { loginInfo, updateLoginInfo, loginMutation } = useContext(AuthContext);
+
   const handleSubmit = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    e.preventDefault();
 
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    } else {
+      loginMutation.mutate(loginInfo);
+    }
     setValidated(true);
   };
 
@@ -27,7 +32,14 @@ const Login = () => {
 
       <Form.Group controlId='validationCustom02' className='mb-4'>
         <Form.Label>Email</Form.Label>
-        <Form.Control required type='email' placeholder='john@gmail.com' />
+        <Form.Control
+          required
+          type='email'
+          placeholder='john@gmail.com'
+          onChange={(e) =>
+            updateLoginInfo({ ...loginInfo, email: e.target.value })
+          }
+        />
         <Form.Control.Feedback type='invalid'>
           Please enter a valid email.
         </Form.Control.Feedback>
@@ -35,14 +47,32 @@ const Login = () => {
 
       <Form.Group controlId='validationCustom03' className='mb-5'>
         <Form.Label>Password</Form.Label>
-        <Form.Control required type='password' placeholder='password' />
+        <Form.Control
+          required
+          type='password'
+          placeholder='password'
+          onChange={(e) =>
+            updateLoginInfo({ ...loginInfo, password: e.target.value })
+          }
+        />
         <Form.Control.Feedback type='invalid'>
           Please enter a strong password.
         </Form.Control.Feedback>
       </Form.Group>
 
-      <Button variant='primary' type='submit'>
-        Submit
+      {loginMutation.error && (
+        <Alert variant='danger'>
+          {loginMutation.error?.response?.data?.message}
+        </Alert>
+      )}
+
+      <Button
+        className='mt-2'
+        variant='primary'
+        type='submit'
+        disabled={loginMutation.isPending}
+      >
+        {loginMutation.isPending ? 'Loading ...' : 'Submit'}
       </Button>
     </Form>
   );
