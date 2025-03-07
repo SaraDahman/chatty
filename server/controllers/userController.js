@@ -1,6 +1,7 @@
-const { userModel } = require('../models');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const mongoose = require('mongoose');
+const { userModel } = require('../models');
 const { GenerateError, generateToken } = require('../helpers');
 
 
@@ -24,7 +25,7 @@ const registerUser = async (req, res, next) => {
         //create a user token
         const token = await generateToken({ id: user._id, email: user.email })
 
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token })
+        res.status(200).json({ _id: user._id, name: user.name, email: user.email, token })
     } catch (error) {
         next(error)
     }
@@ -43,7 +44,7 @@ const loginUser = async (req, res, next) => {
 
         const token = await generateToken({ id: user._id, email: user.email })
 
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token })
+        res.status(200).json({ _id: user._id, name: user.name, email: user.email, token })
     } catch (error) {
         next(error)
     }
@@ -71,9 +72,75 @@ const getUsers = async (req, res, next) => {
     }
 }
 
+const getPotentialUsers = async (req, res, next) => {
+    try {
+        const { userId } = req.query;
+
+        const potentialUsers = await userModel.aggregate([
+            {
+                $match: {
+                    _id: { $ne: new mongoose.Types.ObjectId(userId) }
+                }
+            },
+            {
+                $lookup: {
+                    from: "chats", // Name of the chats collection
+                    let: { userId: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr:
+                                // {
+                                //     $or: [
+                                //         { $eq: ["$senderId", "$$userId"] },
+                                //         { $eq: ["$receiverId", "$$userId"] }
+                                //     ]
+                                // },
+                                {
+                                    $or: [
+                                        {
+                                            $and: [
+                                                { $eq: ["$senderId", "$$userId"] }, // User is the sender
+                                                { $eq: ["$receiverId", new mongoose.Types.ObjectId(userId)] } // userId is the receiver
+                                            ]
+                                        },
+                                        {
+                                            $and: [
+                                                { $eq: ["$senderId", new mongoose.Types.ObjectId(userId)] }, // userId is the sender
+                                                { $eq: ["$receiverId", "$$userId"] } // User is the receiver
+                                            ]
+                                        }
+                                    ]
+                                }
+
+                            }
+                        }
+                    ],
+                    as: "userChats"
+                }
+            },
+            {
+                $match: {
+                    userChats: { $size: 0 } // Filter users with no chats
+                }
+            },
+            {
+                $project: {
+                    userChats: 0 // Exclude the userChats field from the result
+                }
+            }
+        ]);
+
+        res.status(200).json(potentialUsers);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
     findUser,
-    getUsers
+    getUsers,
+    getPotentialUsers
 }
