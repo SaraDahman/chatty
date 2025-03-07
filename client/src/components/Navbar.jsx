@@ -4,7 +4,8 @@ import { useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 
 const NavBar = () => {
-  const { user } = useContext(AuthContext);
+  const { user, handleLogOut } = useContext(AuthContext);
+
   return (
     <Navbar className='bg-body-tertiary px-5 mb-4' data-bs-theme='dark'>
       <Navbar.Brand style={{ fontSize: '2.3rem', fontWeight: '700' }}>
@@ -17,23 +18,25 @@ const NavBar = () => {
         </Link>
       </Navbar.Brand>
       <Navbar.Collapse className='justify-content-end'>
-        {/* <Stack direction='horizontal' gap={4}>
-          <Navbar.Text className='text-white'>
-            Signed in as <b className='text-warning'>{user.name}</b>
-          </Navbar.Text>
-          <Button variant='outline-light' size='sm'>
-            Log Out
-          </Button>
-        </Stack> */}
-
-        <Stack direction='horizontal' gap={2}>
-          <Button as={Link} to='/register' variant='outline-light'>
-            Register
-          </Button>
-          <Button as={Link} to='/login' variant='outline-light'>
-            Log in
-          </Button>
-        </Stack>
+        {user ? (
+          <Stack direction='horizontal' gap={4}>
+            <Navbar.Text className='text-white'>
+              Logged in as <b className='text-warning'>{user.name}</b>
+            </Navbar.Text>
+            <Button variant='outline-light' size='sm' onClick={handleLogOut}>
+              Log Out
+            </Button>
+          </Stack>
+        ) : (
+          <Stack direction='horizontal' gap={2}>
+            <Button as={Link} to='/register' variant='outline-light'>
+              Register
+            </Button>
+            <Button as={Link} to='/login' variant='outline-light'>
+              Log in
+            </Button>
+          </Stack>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import AuthContext from './AuthContext';
 import { registerUser, loginUser } from '../api/auth';
@@ -10,6 +10,11 @@ const AuthContextProvider = ({ children }) => {
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem('user'));
+    setUser(userInfo);
+  }, []);
 
   const [loginInfo, setLoginInfo] = useState({
     email: '',
@@ -37,6 +42,11 @@ const AuthContextProvider = ({ children }) => {
       setUser(data);
     },
   });
+
+  const handleLogOut = useCallback(() => {
+    localStorage.removeItem('user');
+    setUser(null);
+  }, []);
 
   // const registerUser = useCallback(async () => {
   //   try {
@@ -69,6 +79,8 @@ const AuthContextProvider = ({ children }) => {
         loginInfo,
         updateLoginInfo,
         loginMutation,
+
+        handleLogOut,
       }}
     >
       {children}
