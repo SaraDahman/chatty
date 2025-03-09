@@ -40,10 +40,10 @@ export const getUserChats = async (userId) => {
 }
 
 
-export const createMessage = async ({ chatId, senderId }) => {
+export const createMessage = async ({ chatId, senderId, text }) => {
     try {
         const { data } = await axios.post('/api/message', {
-            chatId, senderId
+            chatId, senderId, text
         })
         return data
     } catch (error) {
