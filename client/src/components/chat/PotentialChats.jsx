@@ -3,7 +3,8 @@ import ChatContext from '../../context/ChatContext';
 import { Button, Spinner } from 'react-bootstrap';
 
 const PotentialChats = ({ user }) => {
-  const { potentialChats, createChatMutation } = useContext(ChatContext);
+  const { potentialChats, createChatMutation, onlineUsers } =
+    useContext(ChatContext);
 
   return potentialChats.data?.length ? (
     <>
@@ -30,7 +31,9 @@ const PotentialChats = ({ user }) => {
               disabled={createChatMutation.isPending}
             >
               {e.name}
-              <span className='user-online'></span>
+              {onlineUsers?.some((user) => user.userId == e._id) && (
+                <span className='user-online'></span>
+              )}
             </Button>
           ))
         )}

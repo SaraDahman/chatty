@@ -2,7 +2,7 @@ import { Stack, Image } from 'react-bootstrap';
 import { useFetchRecipient } from '../../hooks/useFetchRecipient';
 import avatar from '../../assets/avatar2.png';
 
-const UserCard = ({ chat, user, updateCurrentChat }) => {
+const UserCard = ({ chat, user, updateCurrentChat, onlineUsers }) => {
   const { recipient, isLoading } = useFetchRecipient(chat, user);
 
   return (
@@ -15,7 +15,7 @@ const UserCard = ({ chat, user, updateCurrentChat }) => {
           gap={3}
           className='user-card align-items-center p-2 justify-content-between'
           role='button'
-          onClick={() => updateCurrentChat(chat)}
+          onClick={() => updateCurrentChat(chat, recipient)}
         >
           <div className='d-flex'>
             <div
@@ -35,7 +35,9 @@ const UserCard = ({ chat, user, updateCurrentChat }) => {
             <div className='text-content'>
               <div>
                 <span className='name mr-5'>{recipient.name}</span>
-                <span className='user-online'></span>
+                {onlineUsers?.some((user) => user.userId == recipient._id) && (
+                  <span className='user-online'></span>
+                )}
               </div>
               <div className='text'>text message</div>
             </div>
