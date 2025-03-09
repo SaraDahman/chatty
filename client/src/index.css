@@ -10,8 +10,9 @@ body {
 
 .all-users {
   display: flex;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
   gap: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .single-user {
@@ -63,15 +64,18 @@ body {
 
 /* Chat Box */
 .chat-box {
-  max-height: calc(100vh - 10rem);
+  /* max-height: calc(100vh - 8rem); */
   overflow-y: auto;
   background: rgb(25, 25, 25);
   border-radius: 10px;
+  height: 36rem;
+  position: sticky;
+  top: 3rem;
 }
 
-.messages-box {
+/* .messages-box {
   height: 85vh;
-}
+} */
 
 /* Chat Header */
 .chat-header {
@@ -117,11 +121,12 @@ body {
 }
 .send-btn {
   border: none;
-  background: rgba(72, 112, 223, 1);
   color: white;
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Notification */
