@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
-const app = require('./app');
-const port = app.get('port');
+const server = require('./app');
 
+
+const port = process.env.PORT || 3000;
 const uri = process.env.ATLAS_URI;
 
-app.listen(port, () => {
+
+
+server.listen(port, () => {
     console.log(`App is running on http://localhost:${port}`);
 });
 
