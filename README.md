@@ -36,17 +36,15 @@ Follow these steps to set up and run Chatty locally on your machine.
 
 ```bash
    git clone https://github.com/your-username/chatty.git
-   cd chatty
-   cd client
 ```
 
 2. **Install dependencies**
 
 ```bash
+cd chatty
+cd client
 npm install
 cd ../server
-npm install
-cd ../socket
 npm install
 ```
 
@@ -57,11 +55,10 @@ ATLAS_URI=mongodb://localhost:27017/chatty
 SECRET_KEY=your_jwt_secret_key
 ```
 
-3. **Start the servers in all three folders**
+3. **Start the servers in all folders**
 
 ```
 npm run dev
-
 ```
 
 4. **Open the app**
