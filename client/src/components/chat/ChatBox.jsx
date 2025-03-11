@@ -1,7 +1,7 @@
 import { Button, Spinner, Stack } from 'react-bootstrap';
 import moment from 'moment';
 import InputEmoji from 'react-input-emoji';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const ChatBox = ({
   currentChat,
@@ -11,6 +11,11 @@ const ChatBox = ({
   messageMutation,
 }) => {
   const [textMessage, setTextMessage] = useState('');
+  const scroll = useRef();
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages.data]);
 
   if (chatMessages.isLoading) {
     return (
@@ -61,6 +66,7 @@ const ChatBox = ({
                     ? 'message self align-self-end flex-grow-0'
                     : 'message align-self-start flex-grow-0'
                 }`}
+                ref={scroll}
               >
                 <span className='mb-1'>{e.text}</span>
                 <span className='message-footer'>
