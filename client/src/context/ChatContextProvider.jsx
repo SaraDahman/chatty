@@ -51,9 +51,9 @@ const ChatContextProvider = ({ children, user }) => {
       socket.on('receiveMessage', ({ message }) => {
         console.log(message);
 
-        if (message.chatId !== currentChat?._id) return;
+        if (message.chat !== currentChat?._id) return;
 
-        queryClient.setQueryData(['messages', currentChat], (oldData) => {
+        queryClient.setQueryData(['messages', currentChat, user], (oldData) => {
           if (oldData) {
             return [...oldData, message];
           }
@@ -65,7 +65,7 @@ const ChatContextProvider = ({ children, user }) => {
         socket.off('receiveMessage');
       };
     }
-  }, [socket, currentChat, queryClient]);
+  }, [socket, currentChat, queryClient, user]);
 
   // Fetch chats
   const fetchChatsResponse = useQuery({
@@ -73,6 +73,8 @@ const ChatContextProvider = ({ children, user }) => {
     queryFn: () => getUserChats(user._id),
     enabled: !!user,
   });
+
+  // console.log(fetchChatsResponse, '<=========== chats response');
 
   //fetch all users for potential chats
   const potentialChats = useQuery({
@@ -83,8 +85,8 @@ const ChatContextProvider = ({ children, user }) => {
 
   // fetch chat messages
   const chatMessages = useQuery({
-    queryKey: ['messages', currentChat],
-    queryFn: () => getChatMessages(currentChat._id),
+    queryKey: ['messages', currentChat, user],
+    queryFn: () => getChatMessages(currentChat._id, user._id),
     enabled: !!currentChat,
   });
 
@@ -103,7 +105,7 @@ const ChatContextProvider = ({ children, user }) => {
       //update potential chats
       queryClient.setQueryData(['potentialChats'], (oldData) => {
         return oldData.filter((e) => {
-          return e._id !== data.senderId && e._id !== data.receiverId;
+          return e._id !== data.sender && e._id !== data.receiver;
         });
       });
     },
@@ -113,7 +115,7 @@ const ChatContextProvider = ({ children, user }) => {
   const messageMutation = useMutation({
     mutationFn: createMessage,
     onSuccess: (data) => {
-      queryClient.setQueryData(['messages', currentChat], (oldData) => {
+      queryClient.setQueryData(['messages', currentChat, user], (oldData) => {
         if (oldData) {
           return [...oldData, data];
         }
@@ -123,11 +125,11 @@ const ChatContextProvider = ({ children, user }) => {
       // emit a socket event to send a message for the other user
       if (socket) {
         socket.emit('sendMessage', {
-          senderId: user._id,
+          sender: user._id,
           recipientId:
-            currentChat.senderId == user._id
-              ? currentChat.receiverId
-              : currentChat.senderId,
+            currentChat.sender == user._id
+              ? currentChat.receiver
+              : currentChat.sender,
           message: data,
         });
       }

@@ -1,11 +1,11 @@
 /* eslint-disable no-useless-catch */
 import axios from "./axios";
 
-export const createChat = async ({ senderId, receiverId }) => {
+export const createChat = async ({ sender, receiver }) => {
     try {
         const { data } = await axios.post(`/api/chat`, {
-            senderId,
-            receiverId
+            sender,
+            receiver
         })
         return data
 
@@ -14,12 +14,12 @@ export const createChat = async ({ senderId, receiverId }) => {
     }
 }
 
-export const getChat = async (senderId, receiverId) => {
+export const getChat = async (sender, receiver) => {
     try {
         const { data } = await axios.get(`/api/chat/find`, {
             params: {
-                senderId,
-                receiverId
+                sender,
+                receiver
             }
         })
         return data
@@ -40,10 +40,10 @@ export const getUserChats = async (userId) => {
 }
 
 
-export const createMessage = async ({ chatId, senderId, text }) => {
+export const createMessage = async ({ chat, sender, receiver, text }) => {
     try {
         const { data } = await axios.post('/api/message', {
-            chatId, senderId, text
+            chat, sender, receiver, text
         })
         return data
     } catch (error) {
@@ -51,11 +51,12 @@ export const createMessage = async ({ chatId, senderId, text }) => {
     }
 }
 
-export const getChatMessages = async (chatId) => {
+export const getChatMessages = async (chat, userId) => {
     try {
         const { data } = await axios.get('/api/message', {
             params: {
-                chatId
+                chat,
+                userId
             }
         })
         return data

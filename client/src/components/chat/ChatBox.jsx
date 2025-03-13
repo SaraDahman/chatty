@@ -35,8 +35,9 @@ const ChatBox = ({
 
   const handleCreateMessage = () => {
     messageMutation.mutate({
-      senderId: user._id,
-      chatId: currentChat._id,
+      sender: user._id,
+      receiver: recipient._id,
+      chat: currentChat._id,
       text: textMessage,
     });
 
@@ -62,7 +63,7 @@ const ChatBox = ({
               <Stack
                 key={e._id}
                 className={`${
-                  e.senderId == user._id
+                  e.sender == user._id
                     ? 'message self align-self-end flex-grow-0'
                     : 'message align-self-start flex-grow-0'
                 }`}

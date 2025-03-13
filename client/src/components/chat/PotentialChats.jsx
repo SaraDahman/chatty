@@ -24,8 +24,8 @@ const PotentialChats = ({ user }) => {
               key={e._id}
               onClick={() => {
                 createChatMutation.mutate({
-                  senderId: user._id,
-                  receiverId: e._id,
+                  sender: user._id,
+                  receiver: e._id,
                 });
               }}
               disabled={createChatMutation.isPending}
