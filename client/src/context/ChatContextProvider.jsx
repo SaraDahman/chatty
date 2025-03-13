@@ -32,40 +32,67 @@ const ChatContextProvider = ({ children, user }) => {
 
   // get online users
   useEffect(() => {
-    if (socket) {
-      socket.emit('addOnlineUser', user?._id);
+    if (!socket) return;
 
-      socket.on('getOnlineUsers', (users) => {
-        setOnlineUsers(users);
-      });
+    socket.emit('addOnlineUser', user?._id);
 
-      return () => {
-        socket.off('getOnlineUsers');
-      };
-    }
+    socket.on('getOnlineUsers', (users) => {
+      setOnlineUsers(users);
+    });
+
+    return () => {
+      socket.off('getOnlineUsers');
+    };
   }, [socket, user]);
 
   // receive the message when someone sends me one
   useEffect(() => {
-    if (socket) {
-      socket.on('receiveMessage', ({ message }) => {
-        console.log(message);
+    if (!socket) return;
 
-        if (message.chat !== currentChat?._id) return;
+    const handleReceiveMessage = ({ message }) => {
+      if (message.chat !== currentChat?._id) return;
 
-        queryClient.setQueryData(['messages', currentChat, user], (oldData) => {
-          if (oldData) {
-            return [...oldData, message];
-          }
-          return [message];
-        });
+      queryClient.setQueryData(['messages', currentChat, user], (oldData) => {
+        if (oldData) {
+          return [...oldData, message];
+        }
+        return [message];
       });
+    };
 
-      return () => {
-        socket.off('receiveMessage');
-      };
-    }
-  }, [socket, currentChat, queryClient, user]);
+    socket.on('receiveMessage', handleReceiveMessage);
+
+    return () => {
+      socket.off('receiveMessage', handleReceiveMessage);
+    };
+  }, [socket, currentChat]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleMessageNotification = (message) => {
+      if (message.chat == currentChat?._id) return;
+
+      queryClient.setQueryData(['chats', user], (oldData) => {
+        if (!oldData) return [];
+
+        return oldData.map((e) => ({
+          ...e,
+          lastMessage: message.text,
+          unreadCounts: {
+            ...e.unreadCounts,
+            [message.recipient]: (e.unreadCounts[message.recipient] || 0) + 1,
+          },
+        }));
+      });
+    };
+
+    socket.on('receiveMessageNotifications', handleMessageNotification);
+
+    return () => {
+      socket.off('receiveMessageNotifications', handleMessageNotification);
+    };
+  }, [socket, currentChat]);
 
   // Fetch chats
   const fetchChatsResponse = useQuery({
@@ -127,10 +154,18 @@ const ChatContextProvider = ({ children, user }) => {
         socket.emit('sendMessage', {
           sender: user._id,
           recipientId:
-            currentChat.sender == user._id
-              ? currentChat.receiver
-              : currentChat.sender,
+            currentChat.sender._id == user._id
+              ? currentChat.receiver._id
+              : currentChat.sender._id,
           message: data,
+        });
+
+        socket.emit('sendMessageNotifications', {
+          recipientId:
+            currentChat.sender._id == user._id
+              ? currentChat.receiver._id
+              : currentChat.sender._id,
+          messageData: data,
         });
       }
     },

@@ -39,6 +39,7 @@ const Chat = () => {
                         user={user}
                         updateCurrentChat={updateCurrentChat}
                         onlineUsers={onlineUsers}
+                        currentChat={currentChat}
                       />
                     </div>
                   ))}
