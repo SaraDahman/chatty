@@ -13,7 +13,12 @@ module.exports = (io, socket, onlineUsers) => {
 
 
     const removeOnlineUser = () => {
-        onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id)
+
+        const index = onlineUsers.findIndex(user => user.socketId === socket.id);
+        if (index !== -1) {
+            onlineUsers.splice(index, 1);
+        }
+
         io.emit('getOnlineUsers', onlineUsers);
     }
 
