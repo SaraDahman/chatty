@@ -92,22 +92,22 @@ const getPotentialUsers = async (req, res, next) => {
                                 $expr:
                                 // {
                                 //     $or: [
-                                //         { $eq: ["$senderId", "$$userId"] },
-                                //         { $eq: ["$receiverId", "$$userId"] }
+                                //         { $eq: ["$sender", "$$userId"] },
+                                //         { $eq: ["$receiver", "$$userId"] }
                                 //     ]
                                 // },
                                 {
                                     $or: [
                                         {
                                             $and: [
-                                                { $eq: ["$senderId", "$$userId"] }, // User is the sender
-                                                { $eq: ["$receiverId", new mongoose.Types.ObjectId(userId)] } // userId is the receiver
+                                                { $eq: ["$sender", "$$userId"] }, // User is the sender
+                                                { $eq: ["$receiver", new mongoose.Types.ObjectId(userId)] } // userId is the receiver
                                             ]
                                         },
                                         {
                                             $and: [
-                                                { $eq: ["$senderId", new mongoose.Types.ObjectId(userId)] }, // userId is the sender
-                                                { $eq: ["$receiverId", "$$userId"] } // User is the receiver
+                                                { $eq: ["$sender", new mongoose.Types.ObjectId(userId)] }, // userId is the sender
+                                                { $eq: ["$receiver", "$$userId"] } // User is the receiver
                                             ]
                                         }
                                     ]

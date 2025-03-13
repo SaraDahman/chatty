@@ -6,23 +6,27 @@ const { GenerateError } = require('../helpers');
 const createChat = async (req, res, next) => {
     try {
 
-        const { senderId, receiverId } = req.body;
+        const { sender, receiver } = req.body;
 
-        if (!senderId || !receiverId) throw new GenerateError(400, 'senderId or receiverId is missing')
+        if (!sender || !receiver) throw new GenerateError(400, 'sender or receiver is missing')
 
         const chat = await chatModel.findOne({
-            senderId,
-            receiverId
+            sender,
+            receiver
         })
 
         if (chat) return res.status(200).send(chat)
 
         const newChat = await chatModel.create({
-            senderId,
-            receiverId
+            sender,
+            receiver,
         })
 
-        res.status(200).json(newChat)
+        const populatedChat = await chatModel.findById(newChat._id)
+            .populate('sender')
+            .populate('receiver');
+
+        res.status(200).json(populatedChat)
 
     } catch (error) {
         next(error)
@@ -42,14 +46,19 @@ const findUserChats = async (req, res, next) => {
 
         const chats = await chatModel.find({
             $or: [
-                { senderId: userId },
-                { receiverId: userId }
+                { sender: userId },
+                { receiver: userId }
             ]
         })
+            .populate('receiver')
+            .populate('sender')
+
 
         res.status(200).json(chats);
 
     } catch (error) {
+        console.log(error);
+
         next(error)
     }
 }
@@ -60,14 +69,14 @@ const findUserChats = async (req, res, next) => {
 const findChat = async (req, res, next) => {
     try {
 
-        const { senderId, receiverId } = req.query;
+        const { sender, receiver } = req.query;
 
-        if (!senderId || !receiverId) throw new GenerateError(400, 'senderId or receiverId is missing')
+        if (!sender || !receiver) throw new GenerateError(400, 'sender or receiver is missing')
 
 
         const chat = await chatModel.findOne({
-            senderId,
-            receiverId
+            sender,
+            receiver
         })
 
 
