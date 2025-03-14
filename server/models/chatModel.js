@@ -15,6 +15,10 @@ const chatSchema = mongoose.Schema({
         default: '',
         ref: 'Message'
     },
+    lastMessageAt: {
+        type: Date,
+        default: null
+    },
     unreadCounts: {
         type: Object, default: {}
     },
