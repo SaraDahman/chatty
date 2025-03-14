@@ -27,7 +27,8 @@ const createMessage = async (req, res, next) => {
             chatId,
             {
                 lastMessage: text,
-                $inc: { [`unreadCounts.${receiver}`]: 1 }
+                $inc: { [`unreadCounts.${receiver}`]: 1 },
+                lastMessageAt: message.createdAt
             },
             { new: true }
         );

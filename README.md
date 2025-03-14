@@ -2,7 +2,7 @@
 
 Chatty is a real-time chat application built with **React**, **Express**, **MongoDB**, and **Socket.IO**. It allows users to join chat rooms and communicate with others in real-time.
 
-![Chatty Screenshot](https://i.ibb.co/jvsdv3XH/screencapture-localhost-5173-2025-03-09-16-17-00.png/800x400) <!-- Add a screenshot of your app here -->
+![Chatty Screenshot](https://i.ibb.co/nstLNVcN/Screenshot-2025-03-14-015547.png/800x400) <!-- Add a screenshot of your app here -->
 
 ## Features
 

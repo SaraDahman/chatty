@@ -9,6 +9,7 @@ const ChatBox = ({
   chatMessages,
   user,
   messageMutation,
+  onlineUsers,
 }) => {
   const [textMessage, setTextMessage] = useState('');
   const scroll = useRef();
@@ -55,6 +56,11 @@ const ChatBox = ({
     <Stack gap={4} className='chat-box'>
       <div className='chat-header'>
         <b>Chat with {recipient.name}</b>
+        {onlineUsers?.some((user) => user.userId == recipient._id) ? (
+          <span className='user-online'></span>
+        ) : (
+          <span className='user-offline'></span>
+        )}
       </div>
       <Stack gap={3} className='messages'>
         {chatMessages.data &&
