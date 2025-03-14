@@ -8,7 +8,7 @@ const NavBar = () => {
 
   return (
     <Navbar className='bg-body-tertiary px-5 mb-4' data-bs-theme='dark'>
-      <Navbar.Brand style={{ fontSize: '2.3rem', fontWeight: '700' }}>
+      <Navbar.Brand style={{ fontSize: '1.7rem', fontWeight: '700' }}>
         <Link to='/' className='text-decoration-none text-white'>
           <i
             className='bi bi-chat-heart-fill'

@@ -7,7 +7,7 @@ const PotentialChats = ({ user }) => {
     useContext(ChatContext);
 
   return potentialChats.data?.length ? (
-    <>
+    <div className='potential-users'>
       <div className='d-flex align-items-center mb-4'>
         <h3 className='me-4 mb-0'>Add a friend </h3>
         {createChatMutation.isPending && (
@@ -38,7 +38,7 @@ const PotentialChats = ({ user }) => {
           ))
         )}
       </div>
-    </>
+    </div>
   ) : (
     <></>
   );
