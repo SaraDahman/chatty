@@ -19,19 +19,23 @@ const Chat = () => {
   } = useContext(ChatContext);
 
   return (
-    <Container>
+    <div>
       {isLoading ? (
         <p>Loading ..</p>
       ) : (
-        <Row>
-          <Col sm={4}>
-            <div>
+        <div
+          style={{
+            display: 'flex',
+            gap: '1rem',
+          }}
+        >
+          <div className='chats p-0'>
+            <div className='chats-column'>
               <PotentialChats user={user} />
-              <h3 className='mb-4'>Your Chats </h3>
               {!data?.length ? (
                 <p>You haven't started a conversation yet</p>
               ) : (
-                <Stack className='messages-box flex-grow-0 pe-3' gap={3}>
+                <Stack className='messages-box flex-grow-0' gap={2}>
                   {data.map((chat, i) => (
                     <div key={i}>
                       <UserCard
@@ -46,19 +50,20 @@ const Chat = () => {
                 </Stack>
               )}
             </div>
-          </Col>
-          <Col sm={8}>
+          </div>
+          <div className='chat-box-container'>
             <ChatBox
               currentChat={currentChat}
               recipient={recipient}
               chatMessages={chatMessages}
               user={user}
               messageMutation={messageMutation}
+              onlineUsers={onlineUsers}
             />
-          </Col>
-        </Row>
+          </div>
+        </div>
       )}
-    </Container>
+    </div>
   );
 };
 

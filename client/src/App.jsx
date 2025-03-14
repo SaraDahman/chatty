@@ -17,7 +17,7 @@ function App() {
   return (
     <ChatContextProvider user={user}>
       <NavBar />
-      <Container>
+      <div className='px-5'>
         <Routes>
           <Route
             path='/'
@@ -33,7 +33,7 @@ function App() {
           />
           <Route path='*' element={<Navigate to='/' />} />
         </Routes>
-      </Container>
+      </div>
     </ChatContextProvider>
   );
 }
