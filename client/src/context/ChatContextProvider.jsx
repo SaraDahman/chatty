@@ -71,7 +71,7 @@ const ChatContextProvider = ({ children, user }) => {
     if (!socket) return;
 
     const handleMessageNotification = (message) => {
-      if (message.chat == currentChat?._id) return;
+      // if (message.chat == currentChat?._id) return;
 
       queryClient.setQueryData(['chats', user], (oldData) => {
         if (!oldData) return [];
@@ -79,10 +79,17 @@ const ChatContextProvider = ({ children, user }) => {
         return oldData.map((e) => ({
           ...e,
           lastMessage: message.text,
-          unreadCounts: {
-            ...e.unreadCounts,
-            [message.recipient]: (e.unreadCounts[message.recipient] || 0) + 1,
-          },
+          unreadCounts:
+            message.chat == currentChat?._id
+              ? {
+                  [message.recipient]: 0,
+                }
+              : {
+                  ...e.unreadCounts,
+                  [message.recipient]:
+                    (e.unreadCounts[message.recipient] || 0) + 1,
+                  lastMessageAt: message.createdAt,
+                },
         }));
       });
     };
@@ -129,12 +136,16 @@ const ChatContextProvider = ({ children, user }) => {
         return [data];
       });
 
+      setCurrentChat(data);
+
       //update potential chats
       queryClient.setQueryData(['potentialChats'], (oldData) => {
         return oldData.filter((e) => {
-          return e._id !== data.sender && e._id !== data.receiver;
+          return e._id !== data.sender._id && e._id !== data.receiver._id;
         });
       });
+
+      setRecipient(data.receiver);
     },
   });
 
