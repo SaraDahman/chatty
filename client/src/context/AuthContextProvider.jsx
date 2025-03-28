@@ -10,16 +10,15 @@ const AuthContextProvider = ({ children }) => {
     email: '',
     password: '',
   });
+  const [loginInfo, setLoginInfo] = useState({
+    email: '',
+    password: '',
+  });
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('user'));
     setUser(userInfo);
   }, []);
-
-  const [loginInfo, setLoginInfo] = useState({
-    email: '',
-    password: '',
-  });
 
   const updateRegisterInfo = useCallback((userInfo) => {
     setRegisterInfo(userInfo);
@@ -27,6 +26,10 @@ const AuthContextProvider = ({ children }) => {
 
   const updateLoginInfo = useCallback((userInfo) => {
     setLoginInfo(userInfo);
+  }, []);
+
+  const updateUser = useCallback((userInfo) => {
+    setUser(userInfo);
   }, []);
 
   const registerMutation = useMutation({
@@ -75,6 +78,7 @@ const AuthContextProvider = ({ children }) => {
         registerInfo,
         updateRegisterInfo,
         registerMutation,
+        updateUser,
 
         loginInfo,
         updateLoginInfo,
